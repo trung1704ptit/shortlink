@@ -2,12 +2,12 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from 'src/auth/auth.module';
 import { TasksController } from './shortlinks.controller';
-import { TasksRepository } from './shortlinks.repository';
-import { TasksService } from './shortlinks.service';
+import { ShortLinkRepository } from './shortlinks.repository';
+import { ShortLinkService } from './shortlinks.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([TasksRepository]), AuthModule],
+  imports: [TypeOrmModule.forFeature([ShortLinkRepository]), AuthModule],
   controllers: [TasksController],
-  providers: [TasksService],
+  providers: [ShortLinkService],
 })
 export class ShortLinkModule {}

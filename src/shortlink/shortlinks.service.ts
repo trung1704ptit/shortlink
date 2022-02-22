@@ -1,36 +1,36 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ShortLinkStatus } from './shortlinks-status.enum';
-import { CreateTaskDto } from './dto/create-shortlink.dto';
+import { CreateShortLinkDto } from './dto/create-shortlink.dto';
 import { GetTasksFilterDto } from './dto/get-shortlinks-filter.dto';
-import { TasksRepository } from './shortlinks.repository';
+import { ShortLinkRepository } from './shortlinks.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ShortLink } from './shortlink.entity';
 import { User } from 'src/auth/user.entity';
 
 @Injectable()
-export class TasksService {
+export class ShortLinkService {
   constructor(
-    @InjectRepository(TasksRepository)
-    private tasksRepository: TasksRepository,
+    @InjectRepository(ShortLinkRepository)
+    private shortlinksRepository: ShortLinkRepository,
   ) {}
 
-  createTask(createTaskDto: CreateTaskDto, user: User): Promise<ShortLink> {
-    return this.tasksRepository.createTask(createTaskDto, user);
+  createShortLink(createShortLinkDto: CreateShortLinkDto, user: User): Promise<ShortLink> {
+    return this.shortlinksRepository.createShortLink(createShortLinkDto, user);
   }
 
   async deleteTaskById(id: string, user: User): Promise<void> {
-    const found = await this.tasksRepository.delete({ id, user });
+    const found = await this.shortlinksRepository.delete({ id, user });
     if (found.affected === 0) {
       throw new NotFoundException('Task with ID ${id} not found');
     }
   }
 
   getTasks(filterDto: GetTasksFilterDto, user: User): Promise<ShortLink[]> {
-    return this.tasksRepository.getAllTasks(filterDto, user);
+    return this.shortlinksRepository.getAllTasks(filterDto, user);
   }
 
   getTaskById(id: string, user: User): Promise<ShortLink> {
-    return this.tasksRepository.getTaskById(id, user);
+    return this.shortlinksRepository.getTaskById(id, user);
   }
 
   async updateLinkStatus(
@@ -40,7 +40,7 @@ export class TasksService {
   ): Promise<ShortLink> {
     const task = await this.getTaskById(id, user);
     task.status = status;
-    await this.tasksRepository.save(task);
+    await this.shortlinksRepository.save(task);
     return task;
   }
 }

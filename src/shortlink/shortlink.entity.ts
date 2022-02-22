@@ -8,12 +8,30 @@ export class ShortLink {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ nullable: true })
   title: string;
 
-  @Column()
+  @Column({ nullable: true })
   description: string;
 
+  @Column()
+  originalLink: string;
+
+  @Column()
+  shortlink: string;
+
+  @Column({ default: 0 })
+  clicks: number;
+  
+  @Column({ default: new Date()})
+  createdAt: Date;
+  
+  @Column({ nullable: true })
+  updatedAt: Date;
+  
+  @Column({ nullable: true })
+  expiredAt: Date;
+  
   @Column()
   status: ShortLinkStatus;
 

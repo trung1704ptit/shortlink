@@ -1,19 +1,26 @@
 import { NotFoundException } from '@nestjs/common';
 import { User } from 'src/auth/user.entity';
 import { EntityRepository, Repository } from 'typeorm';
-import { CreateTaskDto } from './dto/create-shortlink.dto';
+import { CreateShortLinkDto } from './dto/create-shortlink.dto';
 import { GetTasksFilterDto } from './dto/get-shortlinks-filter.dto';
 import { ShortLinkStatus } from './shortlinks-status.enum';
 import { ShortLink } from './shortlink.entity';
 
+const shortid = require('shortid');
+
 @EntityRepository(ShortLink)
-export class TasksRepository extends Repository<ShortLink> {
-  async createTask(createTaskDto: CreateTaskDto, user: User): Promise<ShortLink> {
-    const { title, description } = createTaskDto;
+export class ShortLinkRepository extends Repository<ShortLink> {
+  async createShortLink(createShortLinkDto: CreateShortLinkDto, user: User): Promise<ShortLink> {
+    const { originalLink } = createShortLinkDto;
+    console.log(shortid)
+    const urlId = shortid.generate();
+    console.log(urlId)
+    const shortUrl = `https://techshare247.com/${urlId}`;
     const task = this.create({
-      title,
-      description,
+      originalLink,
+      shortlink: shortUrl,
       status: ShortLinkStatus.OPEN,
+      createdAt: new Date(),
       user,
     });
 

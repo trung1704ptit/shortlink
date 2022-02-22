@@ -12,45 +12,45 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { User } from 'src/auth/user.entity';
-import { CreateTaskDto } from './dto/create-shortlink.dto';
+import { CreateShortLinkDto } from './dto/create-shortlink.dto';
 import { GetTasksFilterDto } from './dto/get-shortlinks-filter.dto';
-import { updateLinkStatusDto } from './dto/update-task-status.dto';
+import { updateLinkStatusDto } from './dto/update-shortlinks-status.dto';
 import { ShortLink } from './shortlink.entity';
-import { TasksService } from './shortlinks.service';
+import { ShortLinkService } from './shortlinks.service';
 
 @Controller('shortlinks')
 @UseGuards(AuthGuard())
 export class TasksController {
-  constructor(private tasksService: TasksService) {
-    this.tasksService = tasksService;
+  constructor(private shortLinkService: ShortLinkService) {
+    this.shortLinkService = shortLinkService;
   }
 
   @Post()
-  createTask(
-    @Body() createTaskDto: CreateTaskDto,
+  createShortLink(
+    @Body() createShortLinkDto: CreateShortLinkDto,
     @GetUser() user: User,
   ): Promise<ShortLink> {
-    return this.tasksService.createTask(createTaskDto, user);
+    return this.shortLinkService.createShortLink(createShortLinkDto, user);
   }
 
   @Delete('/:id')
   deleteTask(@Param('id') id: string, @GetUser() user: User): Promise<void> {
-    return this.tasksService.deleteTaskById(id, user);
+    return this.shortLinkService.deleteTaskById(id, user);
   }
 
-  // http://localhost:3000/tasks
+  // http://localhost:3000/shortlinks
   @Get()
   getTasks(
     @Query() filterDto: GetTasksFilterDto,
     @GetUser() user: User,
   ): Promise<ShortLink[]> {
-    return this.tasksService.getTasks(filterDto, user);
+    return this.shortLinkService.getTasks(filterDto, user);
   }
 
-  //   // http://localhost:3000/tasks/3g234dsds-23dsd-32xdsd-2322s
+  // http://localhost:3000/shortlinks/3g234dsds-23dsd-32xdsd-2322s
   @Get('/:id')
   getTaskById(@Param('id') id: string, @GetUser() user: User): Promise<ShortLink> {
-    return this.tasksService.getTaskById(id, user);
+    return this.shortLinkService.getTaskById(id, user);
   }
 
   @Patch('/:id/status')
@@ -60,6 +60,6 @@ export class TasksController {
     @GetUser() user: User,
   ): Promise<ShortLink> {
     const { status } = updateLinkStatusDto;
-    return this.tasksService.updateLinkStatus(id, status, user);
+    return this.shortLinkService.updateLinkStatus(id, status, user);
   }
 }
